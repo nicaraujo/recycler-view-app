@@ -7,13 +7,21 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.LinkedList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final LinkedList<String> mWordList = new LinkedList<>();
+    private RecyclerView recyclerView;
+    private WordListAdapter wordListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +34,21 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                int wordListSize = mWordList.size();
+                mWordList.addLast("+ Word " + wordListSize);
+                recyclerView.getAdapter().notifyItemInserted(wordListSize);
+                recyclerView.smoothScrollToPosition(wordListSize);
             }
         });
+
+        for (int i = 0; i < 20; i++) {
+           mWordList.addLast("Word " + i);
+        }
+
+        recyclerView = findViewById(R.id.recyclerview);
+        wordListAdapter = new WordListAdapter(this, mWordList);
+        recyclerView.setAdapter(wordListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
